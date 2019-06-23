@@ -1,0 +1,24 @@
+{
+  "autoload": {
+    "psr-4": {
+      "App\\": "./"
+    },"classmap": [
+      "./"
+    ]
+  },
+  "name": "faw/yts_downloader",
+  "description": "Mass download .torrent files",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Fawzi Breidi",
+      "email": "fawzi@breidi.com"
+    }
+  ],
+  "require": {
+    "guzzlehttp/guzzle": "^6.3",
+    "symfony/css-selector": "^4.3",
+    "symfony/dom-crawler": "^4.3"
+  }
+}
