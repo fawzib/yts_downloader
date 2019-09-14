@@ -1,13 +1,13 @@
 <?php
 require_once "vendor/autoload.php";
-ini_set('max_execution_time', 3600);
+ini_set("max_execution_time", 3600);
 
 
 $config = [
-    'yts_url'  => 'https://',
-    'yts_username' => '',
-    'yts_password' => '',
-    'yts_movie_title_limit' => 'The Fundamentals of Caring',
-    //'yts_movie_year_limit' => '2016',
-    'yts_page_limit' => '100',
+    "yts_url"  => "https://",
+    "yts_username" => "",
+    "yts_password" => "",
+    "yts_movie_title_limit" => "The Fundamentals of Caring",
+    //"yts_movie_year_limit" => "2016",
+    "yts_page_limit" => "100",
 ];

@@ -66,7 +66,7 @@ for($i=0; $i < $config['yts_page_limit']; $i++) {
 
 
             if(strtolower($movie_details['movie_title']) == strtolower($config['yts_movie_title_limit'])) {
-                die("Found movie limit: ".$config['yts_movie_title_limit']);
+                die("Found movie limit: ".$config['yts_movie_title_limit']."\n\n");
             }
 
             echo "Downloading: ".$movie_details['download_file'].PHP_EOL;
