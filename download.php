@@ -64,8 +64,7 @@ for($i=0; $i < $config['yts_page_limit']; $i++) {
             $movie_details['movie_title'] = substr($movie_details['download_title'], 0, strrpos($movie_details['download_title'], ' '));
             $movie_details['download_file'] = Funcs::safe_filename($movie_details['download_title'].".torrent");
 
-
-            if(strtolower($movie_details['movie_title']) == strtolower($config['yts_movie_title_limit'])) {
+            if(stripos($movie_details['movie_title'], $config['yts_movie_title_limit']	) !== false) {
                 die("Found movie limit: ".$config['yts_movie_title_limit']."\n\n");
             }
 
