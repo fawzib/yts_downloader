@@ -43,8 +43,17 @@ $latest_url = $config['yts_url']."browse-movies"; //?page=2
 
 
 // loop through page limit
-for($i=0; $i < $config['yts_page_limit']; $i++) {
-    $page_extra = ($i==0) ? "" : "?page=".$i;
+echo "Movie title stop: " . $config['yts_movie_title_limit'].PHP_EOL;
+echo "Max page limit: " . $config['yts_page_limit'].PHP_EOL.PHP_EOL;
+
+
+
+$new_movie_stop = ['',''];
+
+for($page=0; $page < $config['yts_page_limit']; $page++) {
+
+    $page_extra = ($page==0) ? "" : "?page=".$page;
+    echo "Fetching page: ".$page.PHP_EOL;
     $page_body = $client->get($latest_url.$page_extra)->getBody()->getContents();
 
 
@@ -53,6 +62,8 @@ for($i=0; $i < $config['yts_page_limit']; $i++) {
     $crawler->filter('.browse-movie-wrap .browse-movie-tags')->each(function ($td, $i) {
         global $client;
         global $config;
+        global $page;
+        global $new_movie_stop;
 
         try {
             $movie_details = array();
@@ -64,15 +75,35 @@ for($i=0; $i < $config['yts_page_limit']; $i++) {
             $movie_details['movie_title'] = substr($movie_details['download_title'], 0, strrpos($movie_details['download_title'], ' '));
             $movie_details['download_file'] = Funcs::safe_filename($movie_details['download_title'].".torrent");
 
-            if(stripos($movie_details['movie_title'], $config['yts_movie_title_limit']	) !== false) {
-                die("Found movie limit: ".$config['yts_movie_title_limit']."\n\n");
+
+
+
+
+
+            if(stripos($movie_details['movie_title'], $config['yts_movie_title_limit']) !== false) {
+                echo PHP_EOL."*******".PHP_EOL."New movie stops: '".$new_movie_stop[0]."' & '".$new_movie_stop[1]."'".PHP_EOL;
+                die("Found movie limit: ".$config['yts_movie_title_limit'].PHP_EOL.PHP_EOL);
+            }
+            else if(stripos($movie_details['movie_title'], $config['yts_movie_title_limit_2']) !== false) {
+                //alternative title
+                echo PHP_EOL."*******".PHP_EOL."New movie stops: '".$new_movie_stop[0]."' & '".$new_movie_stop[1]."'".PHP_EOL;
+                die("Found movie limit: ".$config['yts_movie_title_limit_2'].PHP_EOL.PHP_EOL);
             }
 
-            echo "Downloading: ".$movie_details['download_file'].PHP_EOL;
+
+
+            //echo "Downloading: ".$movie_details['download_file'].PHP_EOL;
+			echo "Downloading: ".$movie_details['movie_title'].PHP_EOL;
+ 
             $client->get($movie_details['download_url'], ['sink' => "./downloads/".$movie_details['download_file']]);
 
+            if($page == 0 && ($i == 0 || $i == 1)) {
+                echo "in";
+                $new_movie_stop[$i] = $movie_details['movie_title'];
+            }
+
         }catch (Exception $ex) {
-            echo "Error finding download url ".$i.PHP_EOL;
+            echo "Error downloading: ".$movie_details['download_url'].PHP_EOL.PHP_EOL;
         }
 
     });

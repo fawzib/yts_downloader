@@ -8,6 +8,7 @@ $config = [
     "yts_username" => "",
     "yts_password" => "",
     "yts_movie_title_limit" => "The Fundamentals of Caring",
+     "yts_movie_title_limit_2" => "Good Neighbor Sam",
     //"yts_movie_year_limit" => "2016",
     "yts_page_limit" => "100",
 ];
