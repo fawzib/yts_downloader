@@ -53,13 +53,16 @@ $new_movie_stop = ['',''];
 for($page=0; $page < $config['yts_page_limit']; $page++) {
 
     $page_extra = ($page==0) ? "" : "?page=".$page;
-    echo "Fetching page: ".$page.PHP_EOL;
+    echo "Fetching page: ".($page+1).PHP_EOL;
     $page_body = $client->get($latest_url.$page_extra)->getBody()->getContents();
 
 
     $crawler = new Crawler($page_body);
 
-    $crawler->filter('.browse-movie-wrap .browse-movie-tags')->each(function ($td, $i) {
+    $crawler->filter('.browse-movie-bottom')->each(function ($box, $i) {
+		
+		
+		//.browse-movie-wrap 
         global $client;
         global $config;
         global $page;
@@ -68,17 +71,13 @@ for($page=0; $page < $config['yts_page_limit']; $page++) {
         try {
             $movie_details = array();
             //assume last link is the highest quality
-            $movie_details['download_url'] = trim(strip_tags($td->filter("a")->last()->attr("href")));
-            $movie_details['download_title'] = trim(strip_tags($td->filter("a")->last()->attr("title")));
+			$movie_details['movie_year'] = trim($box->filter('.browse-movie-year')->text());
+            $movie_details['download_url'] = trim(strip_tags($box->filter(".browse-movie-tags a")->last()->attr("href")));
+			$movie_details['download_title'] = trim(strip_tags($box->filter(".browse-movie-tags a")->last()->attr("title")));
             $movie_details['download_title'] = substr($movie_details['download_title'], 9);
             $movie_details['download_title'] = substr($movie_details['download_title'], 0, strlen($movie_details['download_title'])-8);
             $movie_details['movie_title'] = substr($movie_details['download_title'], 0, strrpos($movie_details['download_title'], ' '));
-            $movie_details['download_file'] = Funcs::safe_filename($movie_details['download_title'].".torrent");
-
-
-
-
-
+            $movie_details['download_file'] = Funcs::safe_filename($movie_details['download_title']." (". $movie_details['movie_year'] .").torrent");
 
             if(stripos($movie_details['movie_title'], $config['yts_movie_title_limit']) !== false) {
                 echo PHP_EOL."*******".PHP_EOL."New movie stops: '".$new_movie_stop[0]."' & '".$new_movie_stop[1]."'".PHP_EOL;
@@ -98,7 +97,6 @@ for($page=0; $page < $config['yts_page_limit']; $page++) {
             $client->get($movie_details['download_url'], ['sink' => "./downloads/".$movie_details['download_file']]);
 
             if($page == 0 && ($i == 0 || $i == 1)) {
-                echo "in";
                 $new_movie_stop[$i] = $movie_details['movie_title'];
             }
 
